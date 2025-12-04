@@ -1,0 +1,4 @@
+# Development Environment
+logging:
+  level:
+    org.springframework: debug # debug 수준에서 감독

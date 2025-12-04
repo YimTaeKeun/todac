@@ -1,0 +1,4 @@
+# Production Environment
+logging:
+  level:
+    org.springframework: info # info 수준에서 감독

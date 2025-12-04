@@ -1,3 +1,18 @@
 spring:
     application:
         name: todac
+    config:
+      import: optional:file:.env[.properties] # .env 파일 속 설정을 properties라는 속성으로 끌어들여 적용
+    profiles: # 설정 프로필 설정
+      active: dev
+    jpa: # mysql로 설정
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      database: mysql
+      hibernate:
+        ddl-auto: update
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # DB 없으면 생성 및 한국 시간 및 지역 설정
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: ${DB_USER_NAME}
+      password: ${DB_PASSWORD}
