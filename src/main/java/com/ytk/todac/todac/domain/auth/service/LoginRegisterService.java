@@ -2,6 +2,8 @@ package com.ytk.todac.todac.domain.auth.service;
 
 import com.ytk.todac.todac.domain.auth.dto.AuthRequestDTO;
 import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
+import com.ytk.todac.todac.domain.usr.dto.UserDTO;
+import com.ytk.todac.todac.domain.usr.service.UserService;
 import com.ytk.todac.todac.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +22,27 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LoginRegisterService {
     private final String SOCIAL_LOGIN_SERVICE_SUFFIX = "SocialLoginService";
-    Map<String, SocialLoginService> socialLoginServices;
+    private final Map<String, SocialLoginService> socialLoginServices;
+    private final UserService userService;
 
-    public void loginOrRegister(AuthRequestDTO authRequestDTO) {
+    public UserDTO loginOrRegister(AuthRequestDTO authRequestDTO) {
         SocialLoginService SLS = getSocialLoginService(authRequestDTO.getService());
         UserAuthDTO dto = SLS.fetchUserInfo(authRequestDTO.getToken()); // 토큰을 이용하여 사용자 정보 가져옴
         // 신규 회원이면 회원가입, 구 회원이면 유저 정보만 GET하여 돌려 보내기
+        try{
+            return userService.findBySocialUniqueId(authRequestDTO.getService(), dto.getSocialUniqueId());
+        }catch (NotFoundException e){
+            // 신규 회원이라면
+            return registerUser(authRequestDTO.getService(), dto);
+        }
+    }
+
+    private UserDTO registerUser(String registerService, UserAuthDTO userAuthDTO) {
+        return userService.save(UserDTO.builder()
+                .username(userAuthDTO.getUsername())
+                .registerService(registerService)
+                .socialUniqueId(userAuthDTO.getSocialUniqueId())
+                .build());
     }
 
     private SocialLoginService getSocialLoginService(String serviceName) {

@@ -1,6 +1,7 @@
 package com.ytk.todac.todac.global.http;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,11 +40,10 @@ public class KakaoHttpClient {
     public JsonNode fetchUserInfo(String accessToken) {
         // 액세스 토큰을 이용하여 사용자 정보를 가져옵니다.
         String fetchUserUri = "/v2/user/me";
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         WebClient.ResponseSpec RawResponse = apiClient.get()
                 .uri(fetchUserUri) // uri를 설정합니다.
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                 .retrieve(); // 응답을 가져옵니다.
         // 오류 핸들링을 포함한 처리를 한 뒤 최종적인 응답을 가져옵니다.
         return kakaoHttpResponseHandler.handleResponse(RawResponse, JsonNode.class);

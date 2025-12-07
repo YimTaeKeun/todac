@@ -6,7 +6,6 @@ spring:
     profiles: # 설정 프로필 설정
       active: dev
     jpa: # mysql로 설정
-      database-platform: org.hibernate.dialect.MySQL8Dialect
       database: mysql
       hibernate:
         ddl-auto: update
