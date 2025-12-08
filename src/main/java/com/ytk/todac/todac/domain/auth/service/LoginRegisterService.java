@@ -1,10 +1,12 @@
 package com.ytk.todac.todac.domain.auth.service;
 
 import com.ytk.todac.todac.domain.auth.dto.AuthRequestDTO;
+import com.ytk.todac.todac.domain.auth.dto.AuthResponseDTO;
 import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 import com.ytk.todac.todac.domain.usr.dto.UserDTO;
 import com.ytk.todac.todac.domain.usr.service.UserService;
 import com.ytk.todac.todac.global.exception.NotFoundException;
+import com.ytk.todac.todac.global.jwt.token.TokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,17 +26,28 @@ public class LoginRegisterService {
     private final String SOCIAL_LOGIN_SERVICE_SUFFIX = "SocialLoginService";
     private final Map<String, SocialLoginService> socialLoginServices;
     private final UserService userService;
+    private final TokenManager tokenManager;
 
-    public UserDTO loginOrRegister(AuthRequestDTO authRequestDTO) {
+    public AuthResponseDTO loginOrRegister(AuthRequestDTO authRequestDTO) {
         SocialLoginService SLS = getSocialLoginService(authRequestDTO.getService());
         UserAuthDTO dto = SLS.fetchUserInfo(authRequestDTO.getToken()); // 토큰을 이용하여 사용자 정보 가져옴
         // 신규 회원이면 회원가입, 구 회원이면 유저 정보만 GET하여 돌려 보내기
+        UserDTO userDTO;
         try{
-            return userService.findBySocialUniqueId(authRequestDTO.getService(), dto.getSocialUniqueId());
+            userDTO = userService.findBySocialUniqueId(authRequestDTO.getService(), dto.getSocialUniqueId());
         }catch (NotFoundException e){
             // 신규 회원이라면
-            return registerUser(authRequestDTO.getService(), dto);
+            userDTO = registerUser(authRequestDTO.getService(), dto);
         }
+        String accessToken = tokenManager.issueAccessToken(userDTO);
+        return AuthResponseDTO.builder()
+                .username(userDTO.getUsername())
+                .socialUniqueId(authRequestDTO.getService())
+                .tokenInfo(AuthResponseDTO.TokenInfo.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(null)
+                        .build())
+                .build();
     }
 
     private UserDTO registerUser(String registerService, UserAuthDTO userAuthDTO) {
