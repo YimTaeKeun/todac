@@ -1,6 +1,5 @@
 package com.ytk.todac.todac.global.jwt.token;
 
-import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 import com.ytk.todac.todac.domain.usr.dto.UserDTO;
 import com.ytk.todac.todac.global.config.JwtConfiguration;
 import com.ytk.todac.todac.global.jwt.JwtUtil;
@@ -20,6 +19,10 @@ public class TokenManagerImpl implements TokenManager{
     private final JwtConfiguration conf;
     private final JwtUtil jwtUtil;
 
+    @Override
+    public Claims verifyToken(String token) {
+        return jwtUtil.verifyJwt(token);
+    }
 
     @Override
     public String issueRefreshToken(String oldRefreshToken) {

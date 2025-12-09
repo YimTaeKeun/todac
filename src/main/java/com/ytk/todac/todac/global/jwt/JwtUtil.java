@@ -1,14 +1,13 @@
 package com.ytk.todac.todac.global.jwt;
 
 import com.ytk.todac.todac.global.config.JwtConfiguration;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import com.ytk.todac.todac.global.exception.BadRequestException;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtUtil {
     private final JwtConfiguration conf;
+    private final JwtVerifier jwtVerifier = new JwtVerifier();
 
 
     /**
@@ -40,6 +40,15 @@ public class JwtUtil {
                 .setHeaderParams(headers)
                 .compact();
     }
+    /**
+     * JWT를 검증합니다. 토큰이 변조되지 않았음을 검증합니다.
+     * @throws BadRequestException 토큰 검증 실패시 발생하는 예외입니다.
+     * @return 검증이 완료된 페이로드를 반환합니다.
+     * @param jwt 검증할 jwt 토큰을 말합니다.
+     * */
+    public Claims verifyJwt(String jwt) {
+        return jwtVerifier.verifyJwt(jwt);
+    }
 
     private Map<String, Object> getJwtHeaders(){
         Map<String, Object> headers = new HashMap<>();
@@ -52,5 +61,43 @@ public class JwtUtil {
         Date now = new Date();
         additionalClaims.setIssuer(conf.getIssuer());
         additionalClaims.setIssuedAt(now);
+    }
+
+    private class JwtVerifier{
+
+        /**
+         * JWT를 검증합니다. 토큰이 변조되지 않았음을 검증합니다.
+         * @throws BadRequestException 토큰 검증 실패시 발생하는 예외입니다.
+         * @param jwt 검증할 jwt 토큰을 말합니다.
+         * */
+        public Claims verifyJwt(String jwt) {
+            // 1. 서명 검증
+            Claims claims = verifySignature(jwt);
+            // 2. 내부 값 검증
+            verifyPayload(claims);
+            return claims;
+        }
+
+        private Claims verifySignature(String jwt) {
+            // 서명, 만료시간, 발행시간 자동 검증
+            SecretKey secretKey = Keys.hmacShaKeyFor(conf.getSecretKey().getBytes(StandardCharsets.UTF_8));
+            Claims claims;
+            try{
+                claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwt).getBody();
+            } catch (JwtException e){
+                throw new BadRequestException(e.getMessage());
+            }
+            return claims;
+        }
+
+        private void verifyPayload(Claims claims){
+            try{
+                // iss 검증
+                if(!claims.getIssuer().equals(conf.getIssuer())) throw new BadRequestException("Invalid");
+
+            }catch (Exception e){
+                throw new BadRequestException("Invalid payload");
+            }
+        }
     }
 }

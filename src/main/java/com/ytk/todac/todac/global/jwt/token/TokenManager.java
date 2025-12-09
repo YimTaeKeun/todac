@@ -2,6 +2,7 @@ package com.ytk.todac.todac.global.jwt.token;
 
 import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 import com.ytk.todac.todac.domain.usr.dto.UserDTO;
+import io.jsonwebtoken.Claims;
 
 /**
  * 해당 인터페이스는 토큰 매니저의 역할을 정의합니다.
@@ -26,4 +27,10 @@ public interface TokenManager {
      * @param oldRefreshToken 기존 리프레시 토큰을 말합니다.
      * */
     String issueRefreshToken(String oldRefreshToken);
+
+    /**
+     * 토큰을 검증합니다.
+     * @param token 검증할 토큰을 의미합니다.
+     * */
+    Claims verifyToken(String token);
 }
