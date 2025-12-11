@@ -25,6 +25,11 @@ public class CustomExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildExceptionDTO("BAD_REQUEST", ex));
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<?> handleValidationException(ValidationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildExceptionDTO("INVALID_REQUEST", ex));
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> notfoundException(NotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(buildExceptionDTO("NOT_FOUND", ex));

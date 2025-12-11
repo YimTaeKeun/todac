@@ -2,6 +2,7 @@
 logging:
   level:
     org.springframework: info # info 수준에서 감독
+    com.ytk.todac.todac: info
 jwt:
   access-token-validation-period: 21600000 # 6시간 동안 유효
   refresh-token-validation-period: 172800000 # 2일 유효

@@ -4,8 +4,13 @@ import com.ytk.todac.todac.domain.usr.dto.UserDTO;
 import com.ytk.todac.todac.domain.usr.dto.UserMapper;
 import com.ytk.todac.todac.domain.usr.entity.User;
 import com.ytk.todac.todac.domain.usr.repository.UserRepository;
+import com.ytk.todac.todac.global.authentication.CustomUserDetails;
+import com.ytk.todac.todac.global.exception.BadRequestException;
 import com.ytk.todac.todac.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,5 +45,14 @@ public class UserService {
             if(user.getRegisterService().equals(serviceName)) return userMapper.toDTO(user);
         }
         throw new NotFoundException("User not found with id: " + socialUniqueId);
+    }
+
+    public UserDTO getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null
+                || authentication.getPrincipal() == null
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) throw new BadRequestException("Authentication Required");
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return findById(Long.parseLong(userDetails.getId()));
     }
 }

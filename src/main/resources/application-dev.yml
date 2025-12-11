@@ -2,6 +2,7 @@
 logging:
   level:
     org.springframework: debug # debug 수준에서 감독
+    com.ytk.todac.todac: debug
 jwt:
   access-token-validation-period: 21600000 # 6시간 동안 유효
   refresh-token-validation-period: 2592000000 # 30일 유효
