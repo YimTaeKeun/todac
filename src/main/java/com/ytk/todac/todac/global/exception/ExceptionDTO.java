@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.Stack;
+
 /**
  * 해당 클래스는 예외 발생 시 클라이언트 측에 보여줄 메시지 형태를 정의합니다.
  * @author ytk03
@@ -15,10 +18,18 @@ import lombok.Getter;
 public class ExceptionDTO {
     public String exceptionCode;
     public String message;
-    public String stackTrace;
+    public List<StackTrace> stackTrace;
 
     @Override
     public String toString() {
         return "ExceptionCode: " + exceptionCode + ", Message: " + message + ", StackTrace: " + stackTrace;
+    }
+
+    @Getter
+    public static class StackTrace{
+        private String errorStack;
+        StackTrace(String errorStack){
+            this.errorStack = errorStack;
+        }
     }
 }

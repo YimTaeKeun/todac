@@ -6,11 +6,12 @@ import org.slf4j.event.Level;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 해당 클래스는 예외 처리에 관한 로직을 담당합니다.
@@ -23,6 +24,11 @@ public class CustomExceptionController {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildExceptionDTO("BAD_REQUEST", ex));
+    }
+
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<?> handleUnAuthorizedException(UnAuthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildExceptionDTO("UNAUTHORIZED", ex));
     }
 
     @ExceptionHandler(ValidationException.class)
@@ -61,8 +67,16 @@ public class CustomExceptionController {
     private ExceptionDTO buildExceptionDTO(String exceptionCode, Exception ex){
         return ExceptionDTO.builder()
                 .exceptionCode(exceptionCode)
-                .stackTrace((environment.getActiveProfiles()[0].equals("dev")) ? Arrays.toString(ex.getStackTrace()) : null)
+                .stackTrace((environment.getActiveProfiles()[0].equals("dev")) ? stackTraceToList(ex.getStackTrace()) : null)
                 .message(ex.getMessage())
                 .build();
+    }
+
+    private List<ExceptionDTO.StackTrace> stackTraceToList(StackTraceElement[] stackTraceElements){
+        List<ExceptionDTO.StackTrace> list = new ArrayList<>();
+        for(int i = 0; i < stackTraceElements.length; i++){
+            list.add(new ExceptionDTO.StackTrace(stackTraceElements[i].toString()));
+        }
+        return list;
     }
 }
