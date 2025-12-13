@@ -1,10 +1,14 @@
 package com.ytk.todac.todac.domain.usr.entity;
 
+import com.ytk.todac.todac.domain.diary.entity.Diary;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -24,4 +28,11 @@ public class User {
 
     @Column
     private String socialUniqueId; // 소셜 로그인 서버 고유 회원 아이디
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, // 컬렉션 크기가 매우 작다면 EAGER 쓰는 것도 좋음
+            mappedBy = "user"
+    )
+    private List<Diary> diaries = new ArrayList<>();
 }

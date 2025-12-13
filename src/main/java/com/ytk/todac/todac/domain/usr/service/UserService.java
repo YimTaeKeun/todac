@@ -7,6 +7,7 @@ import com.ytk.todac.todac.domain.usr.repository.UserRepository;
 import com.ytk.todac.todac.global.authentication.CustomUserDetails;
 import com.ytk.todac.todac.global.exception.BadRequestException;
 import com.ytk.todac.todac.global.exception.NotFoundException;
+import com.ytk.todac.todac.global.exception.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -51,7 +52,7 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null
                 || authentication.getPrincipal() == null
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) throw new BadRequestException("Authentication Required");
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) throw new UnAuthorizedException("Authentication Required");
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return findById(Long.parseLong(userDetails.getId()));
     }
