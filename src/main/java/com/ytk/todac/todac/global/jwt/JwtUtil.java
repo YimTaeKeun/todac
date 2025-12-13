@@ -1,6 +1,7 @@
 package com.ytk.todac.todac.global.jwt;
 
 import com.ytk.todac.todac.global.config.JwtConfiguration;
+import com.ytk.todac.todac.global.exception.UnAuthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +86,7 @@ public class JwtUtil {
             try{
                 claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwt).getBody();
             } catch (JwtException e){
-                throw new BadRequestException(e.getMessage());
+                throw new UnAuthorizedException(e.getMessage());
             }
             return claims;
         }
@@ -93,10 +94,10 @@ public class JwtUtil {
         private void verifyPayload(Claims claims){
             try{
                 // iss 검증
-                if(!claims.getIssuer().equals(conf.getIssuer())) throw new BadRequestException("Invalid");
+                if(!claims.getIssuer().equals(conf.getIssuer())) throw new UnAuthorizedException("Invalid");
 
             }catch (Exception e){
-                throw new BadRequestException("Invalid payload");
+                throw new UnAuthorizedException("Invalid payload");
             }
         }
     }
