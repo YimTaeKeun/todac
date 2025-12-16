@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getUser(){
-        UserDTO user = userService.getAuthenticatedUser();
+        UserDTO user = userService.getLoginUser();
         return ResponseEntity.ok(user);
     }
 }

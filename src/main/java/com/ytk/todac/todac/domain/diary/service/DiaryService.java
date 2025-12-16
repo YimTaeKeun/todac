@@ -10,6 +10,7 @@ import com.ytk.todac.todac.domain.usr.entity.User;
 import com.ytk.todac.todac.domain.usr.repository.UserRepository;
 import com.ytk.todac.todac.domain.usr.service.UserService;
 import com.ytk.todac.todac.global.exception.CustomException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryMapper diaryMapper;
 
+    @Transactional // 다이어리와 유저를 한꺼번에 저장하기 때문에 트랜잭션으로 묶어 처리
     public DiaryResponseDTO save(DiaryDTO diaryDTO) {
         Diary diary = diaryRepository.save(
                 new Diary(
@@ -34,9 +36,6 @@ public class DiaryService {
     }
 
     private User getWriter(){
-        UserDTO dto = userService.getAuthenticatedUser(); // 로그인한 사용자를 가져옵니다.
-        return userRepository.findById(dto.getId()).orElseThrow(
-                () -> new CustomException(Level.ERROR, "로그인된 사용자를 DB에서 찾을 수 없음.")
-        );
+        return userService.getAuthenticatedUser();
     }
 }

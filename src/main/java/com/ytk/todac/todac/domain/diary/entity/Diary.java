@@ -13,10 +13,11 @@ public class Diary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1000)
+    @Column(length = 255)
     private String diaryTitle;
 
-    @Column(length = 1000000000)
+    @Lob
+    @Column(columnDefinition = "LONGTEXT") // 길이 제한 용량 최대 4gb
     private String diaryContent;
 
     @ManyToOne(

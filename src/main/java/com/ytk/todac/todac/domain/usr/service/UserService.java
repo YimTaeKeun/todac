@@ -48,12 +48,16 @@ public class UserService {
         throw new NotFoundException("User not found with id: " + socialUniqueId);
     }
 
-    public UserDTO getAuthenticatedUser() {
+    public UserDTO getLoginUser(){
+        return userMapper.toDTO(getAuthenticatedUser());
+    }
+
+    public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null
                 || authentication.getPrincipal() == null
                 || !(authentication.getPrincipal() instanceof CustomUserDetails)) throw new UnAuthorizedException("Authentication Required");
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return findById(Long.parseLong(userDetails.getId()));
+        return userRepository.findById(Long.parseLong(userDetails.getId())).orElse(null);
     }
 }

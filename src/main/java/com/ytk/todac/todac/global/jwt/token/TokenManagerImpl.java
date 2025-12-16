@@ -54,10 +54,4 @@ public class TokenManagerImpl implements TokenManager{
         claims.setExpiration(expTime); // 토큰 유효기간 설정
         return claims;
     }
-
-
-}
-
-enum TOKEN_TYPE {
-    ACCESS_TOKEN, REFRESH_TOKEN;
 }
