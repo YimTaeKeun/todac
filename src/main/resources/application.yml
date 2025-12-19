@@ -15,6 +15,14 @@ spring:
       url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       username: ${DB_USER_NAME}
       password: ${DB_PASSWORD}
+    ai:
+      google:
+        genai:
+          api-key: ${GEMINI_API_KEY}
+          project-id: ${GEMINI_PROJECT_ID}
+          chat:
+            options:
+              model: gemini-2.5-flash
 jwt:
   issuer: todac-application
   typ: JWT

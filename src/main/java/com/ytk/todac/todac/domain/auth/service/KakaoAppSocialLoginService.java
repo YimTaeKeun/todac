@@ -1,6 +1,6 @@
 package com.ytk.todac.todac.domain.auth.service;
 
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 import com.ytk.todac.todac.global.http.KakaoHttpClient;
 import lombok.RequiredArgsConstructor;
