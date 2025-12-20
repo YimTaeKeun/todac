@@ -23,6 +23,7 @@ spring:
           chat:
             options:
               model: gemini-2.5-flash
+              response-mime-type: application/json
 jwt:
   issuer: todac-application
   typ: JWT
