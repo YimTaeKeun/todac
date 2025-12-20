@@ -30,7 +30,7 @@ public class LoginRegisterService {
 
     public AuthResponseDTO loginOrRegister(AuthRequestDTO authRequestDTO) {
         SocialLoginService SLS = getSocialLoginService(authRequestDTO.getService());
-        UserAuthDTO dto = SLS.fetchUserInfo(authRequestDTO.getToken()); // 토큰을 이용하여 사용자 정보 가져옴
+        UserAuthDTO dto = SLS.fetchUserInfo(authRequestDTO); // 토큰을 이용하여 사용자 정보 가져옴
         // 신규 회원이면 회원가입, 구 회원이면 유저 정보만 GET하여 돌려 보내기
         UserDTO userDTO;
         try{

@@ -1,5 +1,6 @@
 package com.ytk.todac.todac.domain.auth.service;
 
+import com.ytk.todac.todac.domain.auth.dto.AuthRequestDTO;
 import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 
 /**
@@ -13,5 +14,5 @@ public interface SocialLoginService {
      * 소셜 서버를 통해 사용자 정보를 가져옵니다. UserAuthDTO 형식에 맞춰서 리턴 값을 받아옵니다.
      * @since 2025-12-06
      * */
-    UserAuthDTO fetchUserInfo(String token);
+    UserAuthDTO fetchUserInfo(AuthRequestDTO authRequestDTO);
 }
