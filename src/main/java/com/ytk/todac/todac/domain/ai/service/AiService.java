@@ -7,6 +7,7 @@ import com.ytk.todac.todac.global.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,8 +55,6 @@ public class AiService {
         } catch (Exception e){
             throw new CustomException(Level.WARN, e.getMessage());
         }
-
-//        return response;
     }
 
 

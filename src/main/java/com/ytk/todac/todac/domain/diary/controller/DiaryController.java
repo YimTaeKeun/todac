@@ -25,6 +25,7 @@ public class DiaryController {
         DiaryResponseDTO response = diaryService.save(diaryDTO); // 다이어리를 저장합니다.
         HttpHeaders headers = new HttpHeaders();
         headers.add("Retry-After", "10"); // ai 작업 평균 소요시간
+        diaryService.saveDiaryComment(response.getId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
                 .body(response);
@@ -45,6 +46,10 @@ public class DiaryController {
     @GetMapping("/{diary_id}")
     public ResponseEntity<DiaryResponseDTO> getDiary(@PathVariable Long diary_id){
         DiaryResponseDTO response = diaryService.findById(diary_id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        HttpHeaders headers = new HttpHeaders();
+        if(response.getAiResponse().getAiComment() == null) headers.add("Retry-After", "1");
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(response);
     }
 }

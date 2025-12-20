@@ -1,5 +1,7 @@
 package com.ytk.todac.todac.domain.diary.service;
 
+import com.ytk.todac.todac.domain.ai.dto.AiResponseDTO;
+import com.ytk.todac.todac.domain.ai.service.AiService;
 import com.ytk.todac.todac.domain.diary.dto.DiaryDTO;
 import com.ytk.todac.todac.domain.diary.dto.DiaryMapper;
 import com.ytk.todac.todac.domain.diary.dto.DiaryResponseDTO;
@@ -14,6 +16,7 @@ import com.ytk.todac.todac.global.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.event.Level;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class DiaryService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final DiaryMapper diaryMapper;
+    private final AiService aiService;
 
     @Transactional // 다이어리와 유저를 한꺼번에 저장하기 때문에 트랜잭션으로 묶어 처리
     public DiaryResponseDTO save(DiaryDTO diaryDTO) {
@@ -66,6 +70,19 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new NotFoundException("Diary Not Found"));
         if(diary.getUser().getId() != getWriter().getId()) return false;
         return true;
+    }
+
+    @Transactional
+    @Async
+    public void saveDiaryComment(Long diaryId){
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(
+                () -> new NotFoundException("Diary Not Found")
+        );
+        AiResponseDTO response = aiService.getAiJudgement(diary.getDiaryContent());
+        diary.setAiComment(response.getComment_ko());
+        diary.setAiSentiment(response.getSentiment_score());
+        diary.setAiSentimentTag(response.getSentiment_label());
+        diaryRepository.save(diary);
     }
 
     private User getWriter(){

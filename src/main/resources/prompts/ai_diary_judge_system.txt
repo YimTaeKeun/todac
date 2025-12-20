@@ -34,7 +34,7 @@ Scoring guidelines (must follow):
 - Round the final score to 2 decimal places.
 
 Korean comment requirements:
-- 2–4 sentences, concise but warm.
+- 4–10 sentences, concise but warm.
 - Reflect the user’s emotions and situation accurately.
 - Avoid giving detailed advice or step-by-step plans.
 - You may include one gentle suggestion phrased softly (optional), but do not be prescriptive.

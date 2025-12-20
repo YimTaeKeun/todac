@@ -14,6 +14,7 @@ public class DiaryMapper {
                 .content(diary.getDiaryContent())
                 .createdAt(diary.getCreatedAt())
                 .user(new DiaryResponseDTO.User(user.getId(), user.getUsername()))
+                .aiResponse(new DiaryResponseDTO.AiResponse(diary.getAiSentiment(), diary.getAiSentimentTag(), diary.getAiComment()))
                 .build();
     }
 }
