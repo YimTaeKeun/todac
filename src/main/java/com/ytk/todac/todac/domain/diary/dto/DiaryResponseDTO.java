@@ -6,10 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Builder
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DiaryResponseDTO {
+    @Schema(description = "다이어리의 아이디 입니다. 다이어리 수정/삭제 작업시 사용됩니다.")
+    private Long id;
+
     @Schema(description = "다이어리의 제목을 말합니다.")
     private String title;
 
@@ -18,6 +24,9 @@ public class DiaryResponseDTO {
 
     @Schema(description = "저장된 유저 정보입니다.")
     private User user;
+
+    @Schema(description = "다이어리가 만들어진 날짜입니다.")
+    private LocalDateTime createdAt;
 
     @AllArgsConstructor
     @Getter

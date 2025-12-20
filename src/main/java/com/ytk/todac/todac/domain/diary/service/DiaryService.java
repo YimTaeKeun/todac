@@ -10,10 +10,13 @@ import com.ytk.todac.todac.domain.usr.entity.User;
 import com.ytk.todac.todac.domain.usr.repository.UserRepository;
 import com.ytk.todac.todac.domain.usr.service.UserService;
 import com.ytk.todac.todac.global.exception.CustomException;
+import com.ytk.todac.todac.global.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,36 @@ public class DiaryService {
                 )
         );
         return diaryMapper.toDto(diary);
+    }
+
+    public DiaryResponseDTO findById(Long id) {
+        return diaryMapper.toDto(diaryRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Diary Not Found")
+        ));
+    }
+
+    public List<DiaryResponseDTO> findAllWriterDiaries() {
+        return diaryRepository.findAllByUser(getWriter()).stream()
+                .map(
+                        each -> DiaryResponseDTO.builder()
+                                .id(each.getId())
+                                .title(each.getDiaryTitle())
+                                .createdAt(each.getCreatedAt())
+                                .build()
+                )
+                .toList();
+    }
+
+    public void removeDiary(Long id) {
+        // 다이어리 작성자와 같은지 검사
+        if(isEqualUser(id)) diaryRepository.deleteById(id);
+        else throw new CustomException(Level.WARN, "다이어리 작성자가 아닌 제3자에 의한 삭제 시도 발생");
+    }
+
+    private boolean isEqualUser(Long diaryId){
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(() -> new NotFoundException("Diary Not Found"));
+        if(diary.getUser().getId() != getWriter().getId()) return false;
+        return true;
     }
 
     private User getWriter(){
