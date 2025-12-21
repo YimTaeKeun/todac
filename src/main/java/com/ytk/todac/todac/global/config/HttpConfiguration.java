@@ -12,6 +12,9 @@ public class HttpConfiguration {
     private static final String KAKAO_API_BASE_URL = "https://kapi.kakao.com";
     private static final String KAKAO_AUTH_API_BASE_URL = "https://kauth.kakao.com";
 
+    private static final String NAVER_API_BASE_URL = "https://openapi.naver.com";
+    private static final String NAVER_AUTH_API_BASE_URL = "https://nid.naver.com/oauth2.0";
+
     @Bean
     public WebClient kakaoApiWebClient() {
         return WebClient.builder()
@@ -23,6 +26,20 @@ public class HttpConfiguration {
     public WebClient kakaoAuthWebClient() {
         return WebClient.builder()
                 .baseUrl(KAKAO_AUTH_API_BASE_URL)
+                .build();
+    }
+
+    @Bean
+    public WebClient naverAuthWebClient() {
+        return WebClient.builder()
+                .baseUrl(NAVER_AUTH_API_BASE_URL)
+                .build();
+    }
+
+    @Bean
+    public WebClient naverApiWebClient() {
+        return WebClient.builder()
+                .baseUrl(NAVER_API_BASE_URL)
                 .build();
     }
 }

@@ -43,9 +43,10 @@ public class DiaryService {
     }
 
     public DiaryResponseDTO findById(Long id) {
-        return diaryMapper.toDto(diaryRepository.findById(id).orElseThrow(
+        if(isEqualUser(id)) return diaryMapper.toDto(diaryRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Diary Not Found")
         ));
+        else throw new CustomException(Level.WARN, "다이어리 작성자가 아닌 제3자에 의한 조회 시도 발생");
     }
 
     public List<DiaryResponseDTO> findAllWriterDiaries() {
