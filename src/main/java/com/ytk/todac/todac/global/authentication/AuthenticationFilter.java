@@ -34,6 +34,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 요청 로그 생성
+        log.info(request.getMethod() + " " + request.getRequestURI());
         // 여기서 토큰 검증 및 사용자 업로드를 진행합니다.
         // 1. 요청 토큰 검증
         String header = request.getHeader("Authorization");

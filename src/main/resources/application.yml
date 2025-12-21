@@ -4,7 +4,7 @@ spring:
     config:
       import: optional:file:.env[.properties] # .env 파일 속 설정을 properties라는 속성으로 끌어들여 적용
     profiles: # 설정 프로필 설정
-      active: dev
+      active: prod
     jpa: # mysql로 설정
       database: mysql
       hibernate:
