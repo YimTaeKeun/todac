@@ -40,12 +40,13 @@ public class LoginRegisterService {
             userDTO = registerUser(authRequestDTO.getService(), dto);
         }
         String accessToken = tokenManager.issueAccessToken(userDTO);
+        String refreshToken = tokenManager.issueRefreshToken(userDTO);
         return AuthResponseDTO.builder()
                 .username(userDTO.getUsername())
                 .socialUniqueId(authRequestDTO.getService())
                 .tokenInfo(AuthResponseDTO.TokenInfo.builder()
                         .accessToken(accessToken)
-                        .refreshToken(null)
+                        .refreshToken(refreshToken)
                         .build())
                 .build();
     }
