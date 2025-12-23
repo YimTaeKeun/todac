@@ -22,4 +22,16 @@ public class AuthController {
         // 토큰을 반환합니다.
         return ResponseEntity.status(HttpStatus.OK).body(a);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponseDTO> refresh(@RequestBody AuthRequestDTO authRequestDTO) {
+        AuthResponseDTO response = loginRegisterService.refreshToken(authRequestDTO.getToken());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody AuthRequestDTO authRequestDTO) {
+        loginRegisterService.logout(authRequestDTO.getToken());
+        return ResponseEntity.ok().build();
+    }
 }

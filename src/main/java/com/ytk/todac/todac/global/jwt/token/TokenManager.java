@@ -1,6 +1,5 @@
 package com.ytk.todac.todac.global.jwt.token;
 
-import com.ytk.todac.todac.domain.auth.dto.UserAuthDTO;
 import com.ytk.todac.todac.domain.usr.dto.UserDTO;
 import io.jsonwebtoken.Claims;
 
@@ -22,15 +21,15 @@ public interface TokenManager {
     String issueRefreshToken(UserDTO userDTO);
 
 
-    /**
-     * 기존 리프레시 토큰을 이용하여 새로운 리프레시 토큰을 발급합니다.
-     * @param oldRefreshToken 기존 리프레시 토큰을 말합니다.
-     * */
-    String issueRefreshToken(String oldRefreshToken);
 
     /**
      * 토큰을 검증합니다.
      * @param token 검증할 토큰을 의미합니다.
      * */
-    Claims verifyToken(String token);
+    Claims verifyToken(String token, TOKEN_TYPE tokenType);
+
+    /**
+     * 리프레시 토큰을 DB에서 삭제시킵니다.
+     * */
+    void deleteRefreshToken(String token);
 }

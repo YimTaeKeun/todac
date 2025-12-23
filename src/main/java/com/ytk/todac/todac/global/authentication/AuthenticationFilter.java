@@ -2,6 +2,7 @@ package com.ytk.todac.todac.global.authentication;
 
 import com.ytk.todac.todac.global.exception.UnAuthorizedException;
 import com.ytk.todac.todac.global.exception.ValidationException;
+import com.ytk.todac.todac.global.jwt.token.TOKEN_TYPE;
 import com.ytk.todac.todac.global.jwt.token.TokenManager;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -44,7 +45,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 String[] authorizationHeader = header.split(" ");
                 if(authorizationHeader.length != 2 || !authorizationHeader[0].equals(AUTH_TYPE)) throw new UnAuthorizedException("INVALID");
                 String token = authorizationHeader[1];
-                Claims validClaims = tokenManager.verifyToken(token); // 토큰 검증
+                Claims validClaims = tokenManager.verifyToken(token, TOKEN_TYPE.ACCESS_TOKEN); // 액세스 토큰 검증
                 log.debug("Validated JWT TOKENS");
                 uploadUser(validClaims.getSubject());
             } catch (UnAuthorizedException ex) {
